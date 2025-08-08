@@ -110,6 +110,9 @@
   --sidebar-accent-foreground: oklch(0.985 0 0);
   --sidebar-border: oklch(1 0 0 / 10%);
   --sidebar-ring: oklch(0.556 0 0);
+  --color-dark-1: #1c1f2e;
+  --color-dark-2: #161925;
+  --color-blue-1: #0e78f9;
 }
 
 @layer base {
@@ -118,5 +121,23 @@
   }
   body {
     @apply bg-background text-foreground;
+  }
+}
+
+@layer utilities {
+  .bg-dark-1 {
+    background-color: var(--color-dark-1);
+  }
+  .bg-dark-2 {
+    background-color: var(--color-dark-2);
+  }
+  .bg-blue-1 {
+    background-color: var(--color-blue-1);
+  }
+  .flex-center {
+    @apply flex justify-center items-center;
+  }
+  .flex-between {
+    @apply flex justify-between items-center;
   }
 }
