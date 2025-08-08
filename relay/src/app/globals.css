@@ -112,6 +112,7 @@
   --sidebar-ring: oklch(0.556 0 0);
   --color-dark-1: #1c1f2e;
   --color-dark-2: #161925;
+  --color-blue-1: #0e78f9;
 }
 
 @layer base {
@@ -129,5 +130,14 @@
   }
   .bg-dark-2 {
     background-color: var(--color-dark-2);
+  }
+  .bg-blue-1 {
+    background-color: var(--color-blue-1);
+  }
+  .flex-center {
+    @apply flex justify-center items-center;
+  }
+  .flex-between {
+    @apply flex justify-between items-center;
   }
 }
