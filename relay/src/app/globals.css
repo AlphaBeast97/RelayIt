@@ -113,6 +113,11 @@
   --color-dark-1: #1c1f2e;
   --color-dark-2: #161925;
   --color-blue-1: #0e78f9;
+  --color-sky-1: #c9ddff;
+  --color-orange-1: #ff742e;
+  --color-yellow-1: #f9a90e;
+  --color-purple-1: #830ef9;
+  --color-pink-1: #f83ef9;
 }
 
 .str-video__call-stats {
@@ -225,10 +230,28 @@
   .bg-blue-1 {
     background-color: var(--color-blue-1);
   }
+  .text-sky-1 {
+    color: var(--color-sky-1);
+  }
+  .bg-orange-1 {
+    background-color: var(--color-orange-1);
+  }
+  .bg-yellow-1 {
+    background-color: var(--color-yellow-1);
+  }
+  .bg-purple-1 {
+    background-color: var(--color-purple-1);
+  }
+  .bg-pink-1 {
+    background-color: var(--color-pink-1);
+  }
   .flex-center {
     @apply flex justify-center items-center;
   }
   .flex-between {
     @apply flex justify-between items-center;
+  }
+  .backgroundImage {
+    background-image: url("/images/hero-background.png");
   }
 }
