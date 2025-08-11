@@ -25,7 +25,22 @@ export default function RootLayout({
 }>) {
   return (
     <html lang="en" className="dark">
-      <ClerkProvider>
+      <ClerkProvider
+        appearance={{
+          cssLayerName: 'clerk',
+          layout: {
+            logoImageUrl: "/icons/logo.svg",
+            socialButtonsVariant: "iconButton",
+          },
+          variables: {
+            colorPrimary: "#0e78f9",
+            colorText: "#fff",
+            colorBackground: "#1c1f2e",
+            colorInputBackground: "#252a41",
+            colorInputText: "#fff",
+          },
+        }}
+      >
         <body
           className={`${geistSans.variable} ${geistMono.variable} antialiased bg-dark-2`}
         >
