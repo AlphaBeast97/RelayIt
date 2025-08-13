@@ -3,14 +3,67 @@ import React, { useState } from "react";
 import HomeCard from "./HomeCard";
 import { useRouter } from "next/navigation";
 import MeetingModel from "./MeetingModel";
+import { useUser } from "@clerk/nextjs";
+import { Call, useStreamVideoClient } from "@stream-io/video-react-sdk";
+import { toast } from "sonner";
 
 const MeetingTypeList = () => {
   const [meetingState, setMeetingState] = useState<
     "isScheduleMeeting" | "isJoiningMeeting" | "isInstantMeeting" | undefined
   >();
+  const [values, setValues] = useState({
+    dateTime: new Date(),
+    description: "",
+    link: "",
+  });
+  const [callsDetails, setCallsDetails] = useState<Call>();
   const router = useRouter();
-  const createMeeting = () => {
-    // Logic to create a meeting
+
+  const { user } = useUser();
+  const client = useStreamVideoClient();
+
+  const createMeeting = async () => {
+    if (!user || !client) return;
+
+    try {
+      if (!values.dateTime) {
+        toast.error("Invalid meeting time", {
+          id: "invalid-time",
+        });
+        return;
+      }
+      const id = crypto.randomUUID();
+      const call = client.call("default", id);
+
+      if (!call) throw new Error("Call creation failed");
+
+      const startsAt =
+        values.dateTime.toISOString() || new Date().toISOString();
+      const description = values.description || "Instant Meeting";
+      await call.getOrCreate({
+        data: {
+          starts_at: startsAt,
+          members: [{ user_id: user.id, role: "admin" }],
+          custom: {
+            description,
+          },
+        },
+      });
+
+      setCallsDetails(call);
+
+      if (!values.description) {
+        router.push(`/meeting/${call.id}`);
+      }
+      toast.success("Meeting created successfully", {
+        id: "created-meeting",
+      });
+    } catch (error) {
+      console.log(error);
+      toast.error("Failed to create meeting", {
+        id: "failed-meeting",
+      });
+    }
   };
   return (
     <section className="grid grid-cols-1 gap-5 md:grid-cols-2 xl:grid-cols-4">
