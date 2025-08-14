@@ -5,6 +5,7 @@ import { useEffect, useState } from "react";
 
 export const useGetCalls = () => {
   const [calls, setCalls] = useState<Call[]>([]);
+  const [members, setMembers] = useState<any[]>([]);
   const [isLoading, setIsLoading] = useState(false);
   const client = useStreamVideoClient();
   const { user } = useUser();
@@ -44,6 +45,48 @@ export const useGetCalls = () => {
     loadCall();
   }, [client, user?.id]);
 
+  useEffect(() => {
+    const loadMembers = async () => {
+      try {
+        const membersData = await Promise.all(
+          calls.map(async (call) => {
+            // Query members with sorting and role filtering
+            const response = await call.queryMembers({
+              sort: [{ field: "created_at", direction: -1 }],
+              filter_conditions: {
+                $or: [{ role: { $eq: "admin" } }, { role: { $eq: "member" } }],
+              },
+            });
+
+            // Map the members to include the callId
+            return {
+              callId: call.id,
+              members: response.members.map((member) => ({
+                ...member,
+                callId: call.id,
+                created_at: new Date(member.created_at).getTime(),
+              })),
+            };
+          })
+        );
+
+        // Combine all members and sort by creation date
+        const allMembers = membersData
+          .filter((data) => data.members.length > 0)
+          .flatMap((data) => data.members)
+          .sort((a, b) => b.created_at - a.created_at);
+
+        setMembers(allMembers);
+      } catch (error) {
+        console.error("Error loading members:", error);
+      }
+    };
+
+    if (calls.length > 0) {
+      loadMembers();
+    }
+  }, [calls]);
+
   const now = new Date();
 
   const endedCalls = calls.filter(({ state: { startsAt, endedAt } }: Call) => {
@@ -58,5 +101,6 @@ export const useGetCalls = () => {
     upcomingCalls,
     callRecordings: calls,
     isLoading,
+    members,
   };
 };

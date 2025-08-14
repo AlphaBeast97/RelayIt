@@ -4,7 +4,6 @@ import Image from "next/image";
 
 import { cn } from "@/lib/utils";
 import { Button } from "./ui/button";
-import { avatarImages } from "@/constants";
 import { toast } from "sonner";
 
 interface MeetingCardProps {
@@ -16,6 +15,16 @@ interface MeetingCardProps {
   buttonText?: string;
   handleClick: () => void;
   link: string;
+  participants?: Array<{
+    user_id: string;
+    user?: {
+      image?: string;
+      name?: string;
+    };
+    role?: string;
+    created_at?: string;
+    callId?: string;
+  }>;
 }
 
 const MeetingCard = ({
@@ -27,7 +36,26 @@ const MeetingCard = ({
   handleClick,
   link,
   buttonText,
+  participants = [],
 }: MeetingCardProps) => {
+  // Filter out duplicates and keep only unique participants by user_id
+  // Sort participants by role (admin first) and creation date
+  const sortedParticipants = [...participants].sort((a, b) => {
+    if (a.role === "admin" && b.role !== "admin") return -1;
+    if (a.role !== "admin" && b.role === "admin") return 1;
+    if (a.created_at && b.created_at) {
+      return (
+        new Date(b.created_at).getTime() - new Date(a.created_at).getTime()
+      );
+    }
+    return 0;
+  });
+
+  // Get unique participants (prefer admin roles and newer entries)
+  const uniqueParticipants = Array.from(
+    new Map(sortedParticipants.map((p) => [p.user_id, p])).values()
+  ).slice(0, 5);
+
   return (
     <section className="flex min-h-[258px] w-full flex-col justify-between rounded-[14px] bg-dark-1 px-5 py-8 xl:max-w-[568px]">
       <article className="flex flex-col gap-5">
@@ -39,25 +67,37 @@ const MeetingCard = ({
           </div>
         </div>
       </article>
-      <article className={cn("flex justify-center relative", {})}>
+      <article className="flex w-full flex-col space-y-4">
         <div className="relative flex w-full max-sm:hidden">
-          {avatarImages.map((img, index) => (
-            <Image
-              key={index}
-              src={img}
-              alt="attendees"
-              width={40}
-              height={40}
-              className={cn("rounded-full", { absolute: index > 0 })}
-              style={{ top: 0, left: index * 28 }}
-            />
-          ))}
-          <div className="flex-center absolute left-[136px] size-10 rounded-full border-[5px] border-dark-3 bg-dark-4">
-            +5
-          </div>
+          {uniqueParticipants.map(
+            (participant, index) =>
+              participant?.user?.image && (
+                <div key={participant.user_id} className="relative">
+                  <Image
+                    src={participant.user.image}
+                    alt={participant.user?.name || "Participant"}
+                    width={40}
+                    height={40}
+                    className={cn("rounded-full border-2 border-white", {
+                      absolute: index > 0,
+                      "border-blue-500": participant.role === "admin",
+                    })}
+                    style={{ top: 0, left: index * 28, zIndex: 5 - index }}
+                  />
+                  {participant.role === "admin" && (
+                    <div className="absolute -bottom-1 -right-1 size-4 rounded-full bg-blue-500 ring-2 ring-white" />
+                  )}
+                </div>
+              )
+          )}
+          {participants.length > 5 && (
+            <div className="flex-center absolute left-[136px] size-10 rounded-full border-[5px] border-dark-3 bg-dark-4">
+              +{participants.length - 5}
+            </div>
+          )}
         </div>
         {!isPreviousMeeting && (
-          <div className="flex gap-2">
+          <div className="flex items-center justify-end gap-2">
             <Button onClick={handleClick} className="rounded bg-blue-1 px-6">
               {buttonIcon1 && (
                 <Image src={buttonIcon1} alt="feature" width={20} height={20} />

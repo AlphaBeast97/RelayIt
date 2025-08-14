@@ -68,7 +68,7 @@ const MeetingTypeList = () => {
     }
   };
 
-  const MeetingLink = `${process.env.NEXT_PUBLIC_BASE_URL}/meeting/${callsDetails?.id}`;
+  const meetingLink = `${process.env.NEXT_PUBLIC_BASE_URL}/meeting/${callsDetails?.id}`;
 
   return (
     <section className="grid grid-cols-1 gap-5 md:grid-cols-2 xl:grid-cols-4">
@@ -147,7 +147,7 @@ const MeetingTypeList = () => {
           onclose={() => setMeetingState(undefined)}
           title="Meeting Created"
           handleClick={() => {
-            navigator.clipboard.writeText(`meeting link`);
+            navigator.clipboard.writeText(`${meetingLink}`);
             toast.success("Meeting link copied to clipboard", {
               id: "copied-meeting-link",
             });

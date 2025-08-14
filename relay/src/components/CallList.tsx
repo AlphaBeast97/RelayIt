@@ -7,11 +7,10 @@ import { useGetCalls } from "@/hooks/useGetCalls";
 import MeetingCard from "./MeetingCard";
 import { useEffect, useState } from "react";
 import { useRouter } from "next/navigation";
-import { toast } from "sonner";
 
 const CallList = ({ type }: { type: "ended" | "upcoming" | "recordings" }) => {
   const router = useRouter();
-  const { endedCalls, upcomingCalls, callRecordings, isLoading } =
+  const { endedCalls, upcomingCalls, callRecordings, isLoading, members } =
     useGetCalls();
   const [recordings, setRecordings] = useState<CallRecording[]>([]);
 
@@ -100,6 +99,14 @@ const CallList = ({ type }: { type: "ended" | "upcoming" | "recordings" }) => {
               type === "recordings"
                 ? () => router.push(`${(meeting as CallRecording).url}`)
                 : () => router.push(`/meeting/${(meeting as Call).id}`)
+            }
+            participants={
+              type !== "recordings"
+                ? members.filter(
+                    (member) =>
+                      member.user && member.callId === (meeting as Call).id
+                  )
+                : []
             }
           />
         ))
