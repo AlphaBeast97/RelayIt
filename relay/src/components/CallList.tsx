@@ -102,10 +102,12 @@ const CallList = ({ type }: { type: "ended" | "upcoming" | "recordings" }) => {
             }
             participants={
               type !== "recordings"
-                ? members.filter(
-                    (member) =>
-                      member.user && member.callId === (meeting as Call).id
-                  )
+                ? members.filter((member) => {
+                    // Only show members of this specific call who have user data
+                    const isCallMember = member.callId === (meeting as Call).id;
+                    const hasUserData = !!member.user;
+                    return isCallMember && hasUserData;
+                  })
                 : []
             }
           />

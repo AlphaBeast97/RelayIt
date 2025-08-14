@@ -47,11 +47,15 @@ export const useGetCalls = () => {
 
   useEffect(() => {
     const loadMembers = async () => {
+      if (!client) return;
+
       try {
         const membersData = await Promise.all(
           calls.map(async (call) => {
-            // Query all members with sorting
-            const response = await call.queryMembers({
+            // Get latest data for the existing call
+            const existingCall = client.call("default", call.id);
+            await existingCall.getOrCreate(); // Refresh the call data
+            const response = await existingCall.queryMembers({
               sort: [{ field: "created_at", direction: -1 }],
             });
 
@@ -72,7 +76,6 @@ export const useGetCalls = () => {
           .filter((data) => data.members.length > 0)
           .flatMap((data) => data.members)
           .sort((a, b) => b.created_at - a.created_at);
-
         setMembers(allMembers);
       } catch (error) {
         console.error("Error loading members:", error);
@@ -82,7 +85,7 @@ export const useGetCalls = () => {
     if (calls.length > 0) {
       loadMembers();
     }
-  }, [calls]);
+  }, [calls, client]);
 
   const now = new Date();
 
