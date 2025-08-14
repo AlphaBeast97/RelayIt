@@ -38,11 +38,8 @@ const MeetingCard = ({
   buttonText,
   participants = [],
 }: MeetingCardProps) => {
-  // Filter out duplicates and keep only unique participants by user_id
-  // Sort participants by role (admin first) and creation date
+  // Sort participants by creation date only
   const sortedParticipants = [...participants].sort((a, b) => {
-    if (a.role === "admin" && b.role !== "admin") return -1;
-    if (a.role !== "admin" && b.role === "admin") return 1;
     if (a.created_at && b.created_at) {
       return (
         new Date(b.created_at).getTime() - new Date(a.created_at).getTime()
@@ -80,13 +77,9 @@ const MeetingCard = ({
                     height={40}
                     className={cn("rounded-full border-2 border-white", {
                       absolute: index > 0,
-                      "border-blue-500": participant.role === "admin",
                     })}
                     style={{ top: 0, left: index * 28, zIndex: 5 - index }}
                   />
-                  {participant.role === "admin" && (
-                    <div className="absolute -bottom-1 -right-1 size-4 rounded-full bg-blue-500 ring-2 ring-white" />
-                  )}
                 </div>
               )
           )}

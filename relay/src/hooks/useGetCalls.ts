@@ -50,12 +50,9 @@ export const useGetCalls = () => {
       try {
         const membersData = await Promise.all(
           calls.map(async (call) => {
-            // Query members with sorting and role filtering
+            // Query all members with sorting
             const response = await call.queryMembers({
               sort: [{ field: "created_at", direction: -1 }],
-              filter_conditions: {
-                $or: [{ role: { $eq: "admin" } }, { role: { $eq: "member" } }],
-              },
             });
 
             // Map the members to include the callId
