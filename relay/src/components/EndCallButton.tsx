@@ -29,8 +29,14 @@ const EndCallButton = () => {
     <Button
       className="bg-red-500 text-white cursor-pointer"
       onClick={async () => {
-        await call?.endCall();
-        router.push("/");
+        try {
+          await call?.leave();
+          await call?.endCall();
+          router.push("/");
+        } catch (error) {
+          console.error("Error ending call:", error);
+          router.push("/");
+        }
       }}
     >
       <UsersRoundIcon />

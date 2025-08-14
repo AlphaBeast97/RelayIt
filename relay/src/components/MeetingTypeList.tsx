@@ -6,6 +6,8 @@ import MeetingModel from "./MeetingModel";
 import { useUser } from "@clerk/nextjs";
 import { Call, useStreamVideoClient } from "@stream-io/video-react-sdk";
 import { toast } from "sonner";
+import { Textarea } from "./ui/textarea";
+import DatePicker from "react-datepicker";
 
 const MeetingTypeList = () => {
   const [meetingState, setMeetingState] = useState<
@@ -65,6 +67,9 @@ const MeetingTypeList = () => {
       });
     }
   };
+
+  const meetingLink = `${process.env.NEXT_PUBLIC_BASE_URL}/meeting/${callsDetails?.id}`;
+
   return (
     <section className="grid grid-cols-1 gap-5 md:grid-cols-2 xl:grid-cols-4">
       <HomeCard
@@ -95,6 +100,63 @@ const MeetingTypeList = () => {
         handleClick={() => setMeetingState("isJoiningMeeting")}
         className="bg-yellow-1"
       />
+
+      {!callsDetails ? (
+        <MeetingModel
+          isOpen={meetingState === "isScheduleMeeting"}
+          onclose={() => setMeetingState(undefined)}
+          title="Schedule a Meeting"
+          className="text-center"
+          handleClick={() => createMeeting()}
+          buttonText="Schedule Meeting"
+        >
+          <div className="flex flex-col gap-2.5">
+            <label className="text-base font-normal leading-[22px] text-sky-2">
+              Add a description
+            </label>
+            <Textarea
+              className="border-none bg-dark-3 p-2 focus:outline-none focus:ring-2 focus:ring-sky-1"
+              placeholder="Enter meeting description"
+              value={values.description}
+              onChange={(e) =>
+                setValues((prev) => ({ ...prev, description: e.target.value }))
+              }
+            />
+          </div>
+          <div className="flex w-full flex-col gap-2.5">
+            <label className="text-base font-normal leading-[22px] text-sky-2">
+              Select Date and Time
+            </label>
+            <DatePicker
+              selected={values.dateTime}
+              onChange={(date) =>
+                setValues((prev) => ({ ...prev, dateTime: date! }))
+              }
+              showTimeSelect
+              dateFormat="MMMM d, YYYY h:mm aa"
+              timeFormat="HH:mm"
+              timeIntervals={15}
+              timeCaption="Time"
+              className="w-full rounded bg-dark-3 p-2 focus:outline-none focus:ring-2 focus:ring-sky-1"
+            />
+          </div>
+        </MeetingModel>
+      ) : (
+        <MeetingModel
+          isOpen={meetingState === "isScheduleMeeting"}
+          onclose={() => setMeetingState(undefined)}
+          title="Meeting Created"
+          handleClick={() => {
+            navigator.clipboard.writeText(`${meetingLink}`);
+            toast.success("Meeting link copied to clipboard", {
+              id: "copied-meeting-link",
+            });
+          }}
+          image="/icons/checked.svg"
+          buttonIcon="/icons/copy.svg"
+          buttonText="Copy Meeting Link"
+        ></MeetingModel>
+      )}
       <MeetingModel
         isOpen={meetingState === "isInstantMeeting"}
         onclose={() => setMeetingState(undefined)}
@@ -102,8 +164,6 @@ const MeetingTypeList = () => {
         className="text-center"
         buttonText="Start Meeting"
         handleClick={() => createMeeting()}
-        image=""
-        buttonIcon=""
       >
         <p>Start your meeting instantly with a single click.</p>
       </MeetingModel>

@@ -112,8 +112,11 @@
   --sidebar-ring: oklch(0.556 0 0);
   --color-dark-1: #1c1f2e;
   --color-dark-2: #161925;
+  --color-dark-3: #242940;
+  --color-dark-4: #202755;
   --color-blue-1: #0e78f9;
   --color-sky-1: #c9ddff;
+  --color-sky-2: #dee3f1;
   --color-orange-1: #ff742e;
   --color-yellow-1: #f9a90e;
   --color-purple-1: #830ef9;
@@ -227,11 +230,20 @@
   .bg-dark-2 {
     background-color: var(--color-dark-2);
   }
+  .bg-dark-3 {
+    background-color: var(--color-dark-3);
+  }
+  .bg-dark-4 {
+    background-color: var(--color-dark-4);
+  }
   .bg-blue-1 {
     background-color: var(--color-blue-1);
   }
   .text-sky-1 {
     color: var(--color-sky-1);
+  }
+  .text-sky-2 {
+    color: var(--color-sky-2);
   }
   .bg-orange-1 {
     background-color: var(--color-orange-1);
