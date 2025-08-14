@@ -7,8 +7,8 @@ import { useUser } from "@clerk/nextjs";
 import { StreamCall, StreamTheme } from "@stream-io/video-react-sdk";
 import React, { useState } from "react";
 
-const Meeting = ({ params }: { params: { id: string } }) => {
-  const { id } = params;
+const Meeting = ({ params }: { params: Promise<{ id: string }> }) => {
+  const { id } = React.use(params);
   const { user, isLoaded } = useUser();
   const { call, isCallLoading } = useGetCallById(id);
   const [isSetupComplete, setIsSetupComplete] = useState(false);

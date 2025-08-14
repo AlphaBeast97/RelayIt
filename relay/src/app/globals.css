@@ -113,6 +113,7 @@
   --color-dark-1: #1c1f2e;
   --color-dark-2: #161925;
   --color-dark-3: #242940;
+  --color-dark-4: #202755;
   --color-blue-1: #0e78f9;
   --color-sky-1: #c9ddff;
   --color-sky-2: #dee3f1;
@@ -231,6 +232,9 @@
   }
   .bg-dark-3 {
     background-color: var(--color-dark-3);
+  }
+  .bg-dark-4 {
+    background-color: var(--color-dark-4);
   }
   .bg-blue-1 {
     background-color: var(--color-blue-1);
