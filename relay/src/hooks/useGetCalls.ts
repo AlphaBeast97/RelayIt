@@ -5,6 +5,7 @@ import { useEffect, useState } from "react";
 
 export const useGetCalls = () => {
   const [calls, setCalls] = useState<Call[]>([]);
+  // eslint-disable-next-line @typescript-eslint/no-explicit-any
   const [members, setMembers] = useState<any[]>([]);
   const [isLoading, setIsLoading] = useState(false);
   const client = useStreamVideoClient();

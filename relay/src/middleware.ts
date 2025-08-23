@@ -9,6 +9,7 @@ const isProtectedRoute = createRouteMatcher([
   "/meeting(.*)",
 ]);
 
+// eslint-disable-next-line @typescript-eslint/no-explicit-any
 export default clerkMiddleware(async (auth: any, req: any) => {
   // Re-enable route protection
   if (isProtectedRoute(req)) {
